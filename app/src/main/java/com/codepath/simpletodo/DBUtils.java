@@ -39,7 +39,7 @@ public class DBUtils extends SQLiteOpenHelper {
     public void insertItem(String item)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("insert into " + TABLE_NAME + "(item) values(" + item +");");
+        db.execSQL("insert into " + TABLE_NAME + " values(\"" + item +"\");");
     }
 
 //    public Cursor getData(int id){
@@ -57,7 +57,7 @@ public class DBUtils extends SQLiteOpenHelper {
     public void updateItem (String newItem)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("update "+TABLE_NAME+" set item=\"" + newItem + "\" where item="+ oldItem);
+        //db.execSQL("update "+TABLE_NAME+" set item=\"" + newItem + "\" where item="+ oldItem);
     }
 
     public void deleteItem (String item)

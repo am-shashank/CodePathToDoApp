@@ -56,11 +56,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onAddItem(View v) {
         EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
-
         String itemText = etNewItem.getText().toString();
         itemsAdapter.add(itemText);
         etNewItem.setText("");
-        itemDB.updateItem(itemText);
+        itemDB.insertItem(itemText);
     }
 
     public void setUpListViewListener() {
