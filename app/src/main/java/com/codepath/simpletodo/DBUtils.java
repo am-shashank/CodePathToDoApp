@@ -16,8 +16,22 @@ public class DBUtils extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "TODO";
     public static final String TABLE_NAME = "todo_items";
+    private static DBUtils sInstance; // Singleton pattern
 
-    public DBUtils(Context context)
+    public static synchronized DBUtils getInstance(Context context) {
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        if (sInstance == null) {
+            sInstance = new DBUtils(context.getApplicationContext());
+        }
+        return sInstance;
+    }
+
+    /**
+     * Constructor should be private to prevent direct instantiation.
+     * Make a call to the static method "getInstance()" instead.
+     */
+    private DBUtils(Context context)
     {
         super(context, DATABASE_NAME , null, 1);
     }
@@ -54,16 +68,16 @@ public class DBUtils extends SQLiteOpenHelper {
 //        return numRows;
 //    }
 
-    public void updateItem (String newItem)
+    public void updateItem (String oldItem, String newItem)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        //db.execSQL("update "+TABLE_NAME+" set item=\"" + newItem + "\" where item="+ oldItem);
+        db.execSQL("update "+TABLE_NAME+" set item=\"" + newItem + "\" where item=\""+ oldItem+"\"");
     }
 
     public void deleteItem (String item)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete from "+TABLE_NAME + " where item="+item);
+        db.execSQL("delete from "+TABLE_NAME + " where item=\""+item+"\"");
 
     }
 

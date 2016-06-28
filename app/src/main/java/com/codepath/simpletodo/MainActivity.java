@@ -1,7 +1,9 @@
 package com.codepath.simpletodo;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -18,13 +21,15 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
     DBUtils itemDB;
+    // REQUEST_CODE can be any value we like, used to determine the result type later
+    private final int REQUEST_CODE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        itemDB = new DBUtils(this);
+        itemDB = DBUtils.getInstance(this);
         items = itemDB.getAllItems();
         lvItems = (ListView) findViewById(R.id.lvItems);
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
@@ -62,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         itemDB.insertItem(itemText);
     }
 
+
     public void setUpListViewListener() {
         lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -72,5 +78,29 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                Intent intent = new Intent(MainActivity.this, EditItemActivity.class);
+                intent.putExtra("item", items.get(position));
+                intent.putExtra("position", position);
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // REQUEST_CODE is defined above
+
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            // Extract name value from result extras
+            String item = data.getExtras().getString("item");
+            int position = data.getExtras().getInt("position");
+            items.set(position, item);
+            itemsAdapter.notifyDataSetChanged();
+        }
     }
 }
