@@ -28,7 +28,7 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-The SQLite database table used to store the todo items is very simple for demo purpose. It doesn't use any primary key. Deletion of items is based on the item text.
+The SQLite database table used to store the todo items is very simple for demo purpose. It doesn't use any primary key. Deletion of items is based on the item text which means that duplicate items in todo list could be deleted. This could be worked around by using an id in the database.
 
 ## License
 
